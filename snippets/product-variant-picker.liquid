@@ -21,6 +21,11 @@
     {{ block.shopify_attributes }}
   >
     {%- for option in product.options_with_values -%}
+      {% comment %} Test product's option value {% endcomment %}
+      <script type="text/javascript">
+        console.log("product option value==>", {{option | json}})
+      </script>
+
       {%- liquid
         assign swatch_count = option.values | map: 'swatch' | compact | size
         assign picker_type = block.settings.picker_type
@@ -49,15 +54,33 @@
           %}
         </fieldset>
       {%- elsif picker_type == 'button' -%}
-        <fieldset class="js product-form__input product-form__input--pill">
-          <legend class="form__label">{{ option.name }}</legend>
-          {% render 'product-variant-options',
-            product: product,
-            option: option,
-            block: block,
-            picker_type: picker_type
-          %}
-        </fieldset>
+        {% comment %}
+          // Test this option is Select or Swatch
+        {% endcomment %}
+        {% if option.position == 1 %}
+          <select>
+            <option>Unselected</option>
+            {% render 'product-variant-options',
+              product: product,
+              option: option,
+              block: block,
+              picker_type: picker_type
+            %}
+          </select>
+        {% else %}
+          <fieldset class="js product-form__input product-form__input--pill">
+            <legend class="form__label">{{ option.name }}</legend>
+            {% render 'product-variant-options',
+              product: product,
+              option: option,
+              block: block,
+              picker_type: picker_type
+            %}
+          </fieldset>
+        {% endif %}
+        {%- comment -%}
+          //////////////////////////////////////////////////
+        {%- endcomment -%}
       {%- else -%}
         <div class="product-form__input product-form__input--dropdown">
           <label class="form__label" for="Option-{{ section.id }}-{{ forloop.index0 }}">
