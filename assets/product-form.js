@@ -44,6 +44,24 @@ if (!customElements.get('product-form')) {
         fetch(`${routes.cart_add_url}`, config)
           .then((response) => response.json())
           .then((response) => {
+
+            // Resend ajax reauest for inserting service product following inserted product
+            let serviceProductFormData = {
+              'items': [
+                {'id': document.querySelector('.service-product').value, 'quantity': 1}
+              ]
+            }
+
+            fetch('/cart/add.js', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(serviceProductFormData)
+            })
+            .then(res => console.log("response==>", res))
+            .catch(err => console.log("Error==>", err));
+
             if (response.status) {
               publish(PUB_SUB_EVENTS.cartError, {
                 source: 'product-form',

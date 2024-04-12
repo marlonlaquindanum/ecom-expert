@@ -61,6 +61,13 @@
           class="product-variant-id"
         >
 
+        {%- comment -%}
+          // insert input type hidden tag for getting service product's id
+        {%- endcomment -%}
+        {% for item in product.metafields.custom.service.value %}
+          <input type="hidden" class="service-product" value="{{ item.selected_or_first_available_variant.id }}">
+        {% endfor %}
+
         {%- if gift_card_recipient_feature_active -%}
           {%- render 'gift-card-recipient-form', product: product, form: form, section: section -%}
         {%- endif -%}

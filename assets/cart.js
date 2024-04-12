@@ -118,6 +118,26 @@ class CartItems extends HTMLElement {
         return response.text();
       })
       .then((state) => {
+
+        // Resend ajax request for deleting service product following deleted product
+        let serviceCartProduct = {
+          id: document.querySelector('.cart-service-product').value,
+          quantity: 0
+        }
+
+        fetch('/cart/change.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(serviceCartProduct)
+        })
+        .then(res => {
+          document.getElementById(`CartItem-${line-1}`).style.visibility = 'hidden';
+          console.log("response from cart backend==>", res)
+        })
+        .catch(err => console.log("Error==>", err));
+
         const parsedState = JSON.parse(state);
         const quantityElement =
           document.getElementById(`Quantity-${line}`) || document.getElementById(`Drawer-quantity-${line}`);

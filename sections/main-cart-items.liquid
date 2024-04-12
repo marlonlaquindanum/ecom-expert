@@ -80,6 +80,26 @@
               <tbody>
                 {%- for item in cart.items -%}
                   <tr class="cart-item" id="CartItem-{{ item.index | plus: 1 }}">
+                    {%- comment -%}
+                      // Insert cart-item's product id for deleting service cart item from cart.
+                    {%- endcomment -%}
+                    <script type="text/javascript">
+                      console.log("cart item object==>", {{item | json}});
+                    </script>
+
+                    {%- comment -%}
+                      // Get product object for getting service product's variant id
+                    {%- endcomment -%}
+                    {% assign products_obj = collections.all.products | where: 'id', item.product_id %}
+                    {% assign product = products_obj[0] %}
+
+                    {%- for item in product.metafields.custom.service.value -%}
+                      <input
+                        type="hidden"
+                        class="cart-service-product"
+                        value="{{ item.selected_or_first_available_variant.id }}"
+                      >
+                    {%- endfor -%}
                     <td class="cart-item__media">
                       {% if item.image %}
                         {% comment %} Leave empty space due to a:empty CSS display: none rule {% endcomment %}
